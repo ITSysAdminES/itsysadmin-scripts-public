@@ -35,8 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install PowerShell and PSScriptAnalyzer
-        uses: microsoft/setup-powershell@v1
       - name: Lint PowerShell
         shell: pwsh
         run: |
