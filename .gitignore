@@ -1,0 +1,24 @@
+# Secretos y credenciales
+.env
+.env.*
+.secrets/
+*.key
+*.pem
+*.pfx
+*.p12
+id_rsa*
+authorized_keys
+
+# Datos y copias de producción
+*.sql
+*.sql.gz
+*.bak
+backups/
+exports/
+wp-config.php
+
+# Temporales
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

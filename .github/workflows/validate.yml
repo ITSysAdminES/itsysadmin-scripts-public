@@ -1,0 +1,63 @@
+name: Validate public diagnostics
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Lint PHP
+        run: find diagnostics/wordpress -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l
+
+  bash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+      - name: Lint Bash
+        run: find diagnostics -type f -name '*.sh' -print0 | xargs -0 -r shellcheck -x -S error
+
+  powershell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PowerShell and PSScriptAnalyzer
+        uses: microsoft/setup-powershell@v1
+      - name: Lint PowerShell
+        shell: pwsh
+        run: |
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+          $errors = @()
+          Get-ChildItem -Recurse -Filter *.ps1 | ForEach-Object {
+            $errors += Invoke-ScriptAnalyzer -Path $_.FullName -Severity Error
+          }
+          if ($errors) { $errors | Format-List; exit 1 }
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan tracked files locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          pattern='BEGIN (RSA|EC|OPENSSH|DSA) PRIVATE KEY|(^|[^A-Za-z0-9])(gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})([^A-Za-z0-9]|$)|api[_-]?key[[:space:]]*[:=][[:space:]]*["'"''][^"'"'']+'
+          if git grep --cached -nI -E "$pattern" -- . ':(exclude).github/workflows/validate.yml'; then
+            echo 'Potential secret pattern found; inspect matching tracked lines.' >&2
+            exit 1
+          fi
+          echo 'No common secret patterns found; no file contents were uploaded.'
