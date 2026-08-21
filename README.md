@@ -2,7 +2,7 @@
 
 Read-only diagnostics for Windows Server, Active Directory, Bash/HTTP, WordPress, Docker and Synology environments.
 
-This public repository is a history-free export of the reviewed tree from commit `d0651d42d614cc3e492a83a51a6434399349045c` of the private project. Code links should use a release or commit, not a moving branch.
+This public repository is a history-free export of the reviewed public tree at commit `c04c39c77af1e5008a37c2aa365f6253a5ea1eec`. Code links should use a release or commit, not a moving branch.
 
 ## Scope
 
@@ -25,6 +25,17 @@ Never pass credentials on command lines. Do not publish command output, cookies,
 ## Testing
 
 The CI workflow runs PHP syntax checks, ShellCheck, PowerShell linting and a local secret-pattern scan without uploading file contents. Environment-dependent WordPress, Windows and remote HTTP checks must be run in an isolated environment by the operator.
+
+## Guías relacionadas en ITSysAdmin
+
+Consulta el [hub público de herramientas de diagnóstico](https://itsysadmin.es/herramientas-de-diagnostico/) y estas guías prácticas:
+
+- [Test-DnsSrv.ps1: comprobar registros SRV de Active Directory](https://itsysadmin.es/microsoft/active-directory-dns-registros-srv-ausentes/)
+- [Auditoría de Cloudflare y WordPress](https://itsysadmin.es/cloud/wordpress-cloudflare-bucle-redirecciones-contenido-mixto/)
+- [Diagnóstico de Docker y MariaDB](https://itsysadmin.es/linux/docker-compose-wordpress-mariadb-healthcheck-orden-arranque/)
+- [Auditoría HTTP de una web no accesible](https://itsysadmin.es/cloud/diagnosticar-web-no-accesible-desde-ip-publica/)
+
+Cada guía explica el contexto, los requisitos y los límites del script correspondiente. Los diagnósticos son de solo lectura y deben revisarse antes de ejecutarlos.
 
 ## License and security
 
